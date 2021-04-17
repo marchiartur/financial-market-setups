@@ -1,0 +1,42 @@
+var
+CurrentIndex : integer;
+StopGain, StopLoss, ValueToBuy : float; 
+IsLowLessThanTwoPeriodsAgo, IsUpTrend, IsToBuy : boolean;
+
+function fCalcultateGain (CandleLow:float; CandleHigh:float; Multiplier: float):float;
+var priceDifference: float;
+begin
+   Result := ((CandleHigh - CandleLow) * Multiplier) + CandleLow;  
+end;
+
+begin
+  CurrentIndex := CurrentBar;
+  
+  Plot(Media(21, Close));
+
+  IsLowLessThanTwoPeriodsAgo := (Low < Low[1]) and (Low < Low[2]);
+  IsUpTrend := (Media(21, Close) > (Media(21, Close[1]))); 
+
+  if(IsToBuy) then
+    begin
+      BuyStop(ValueToBuy, ValueToBuy + 0.01); 
+    end;
+  
+  if(IsBought) then
+    begin
+      SellToCoverStop(StopGain + 100, StopGain + 0.01);
+      SellToCoverStop(StopLoss, StopLoss - 0.01);
+    end;
+
+  if(IsToBuy)then IsToBuy := false;
+ 
+  if(IsLowLessThanTwoPeriodsAgo and IsUpTrend) then
+    begin
+      PaintBar(clVerde);
+      ValueToBuy := High + 0.01;
+      IsToBuy := true;
+
+      StopGain := fCalcultateGain(Low - 0.01, High + 0.01, 2);
+      StopLoss := Low;
+    end;
+end;
