@@ -1,6 +1,6 @@
 # Dave Landry
 
-## Strategie:
+## Strategy:
 - arithmetic moving average 21 periods rising 
 - current candle has low lower than two previous candles
 
